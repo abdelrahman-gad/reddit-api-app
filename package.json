@@ -1,0 +1,17 @@
+{
+  "name": "reddit-search-api",
+  "version": "1.0.0",
+  "description": "customized search reddit  app ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "parcel": "parcel index.html",
+    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json"
+  },
+  "author": "abdurrahman",
+  "license": "ISC",
+  "devDependencies": {
+    "better-docs": "^1.1.6",
+    "jsdoc": "^3.5.5"
+  }
+}
