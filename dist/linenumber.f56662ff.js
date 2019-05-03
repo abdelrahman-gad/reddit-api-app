@@ -117,162 +117,34 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"src/js/redditapi.js":[function(require,module,exports) {
-"use strict";
+})({"docs/scripts/linenumber.js":[function(require,module,exports) {
+/*global document */
+(function () {
+  var source = document.getElementsByClassName('prettyprint source linenums');
+  var i = 0;
+  var lineNumber = 0;
+  var lineId;
+  var lines;
+  var totalLines;
+  var anchorHash;
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  /**
-   * @description this object dealing with the reddit api usin fetch api
-   * @see {@link http://www.reddit.com }
-   * @this reddit  object
-   * @name search 
-   * @param  {string}  searchTerm   represents the word term user is looking for 
-   * @param  {number} searchLimit   the number of search result reflect back from the api
-   * @param {string}   sortBy       the priority of sorting by latest posts or revelancy
-   * @method 
-   * @returns {Array<Object>}       each object contains bunch of properties  {title , name ,image}   like so 
-   */
-  search: function search(searchTerm, searchLimit, sortBy) {
-    return fetch("http://www.reddit.com/search.json?q=".concat(searchTerm, "&sort=").concat(sortBy, "&limit=").concat(searchLimit)).then(function (res) {
-      return res.json();
-    }).then(function (data) {
-      return data.data.children.map(function (data) {
-        return data.data;
-      });
-    }).catch(function (err) {
-      return console.log(err);
-    });
+  if (source && source[0]) {
+    anchorHash = document.location.hash.substring(1);
+    lines = source[0].getElementsByTagName('li');
+    totalLines = lines.length;
+
+    for (; i < totalLines; i++) {
+      lineNumber++;
+      lineId = 'line' + lineNumber;
+      lines[i].id = lineId;
+
+      if (lineId === anchorHash) {
+        lines[i].className += ' selected';
+      }
+    }
   }
-};
-exports.default = _default;
-},{}],"src/js/index.js":[function(require,module,exports) {
-"use strict";
-
-var _redditapi = _interopRequireDefault(require("./redditapi"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * @description catching the html element form#search-form  and asssigning it to a DOM object
- * @const
- * @name searchForm
- * @type {Object} DOM object
- */
-var searchForm = document.getElementById("search-form");
-/**
- * @description catching the html element button#search-btn  and asssigning it to a DOM object
- * @const
- * @name searchBtn
- * @type {Object} DOM object
- */
-
-var searchBtn = document.getElementById("search-btn");
-/**
- * @description catching the html element form#search-input  and asssigning it to a DOM object
- * @const
- * @name searchInput
- * @type {Object} DOM object
- */
-
-var searchInput = document.getElementById("search-input");
-/**
- * @description thei most important functio it takes the inputs parameters from the {@link searchform}
- * then passing the via the url from the method {@link search} then getting the respnse then populate the DOM
- * @summary make response/get response /populate the DOM
- * @param {Object} event object
- * @name handleSubmit
- * @function
- */
-
-function handleSubmit(e) {
-  // Get sort
-  var sortBy = document.querySelector('input[name="sortby"]:checked').value; // Get limit
-
-  var searchLimit = document.getElementById("limit").value; // Get search
-
-  var searchTerm = searchInput.value; // Check for input
-
-  if (searchTerm == "") {
-    // Show message
-    showMessage("Please add a search term", "alert-danger");
-  } // Clear field
-
-
-  searchInput.value = ""; // Search Reddit
-
-  _redditapi.default.search(searchTerm, searchLimit, sortBy).then(function (results) {
-    var output = '<div class="card-columns">';
-    console.log(results);
-    results.forEach(function (post) {
-      // Check for image
-      var image = post.preview ? post.preview.images[0].source.url : "https://cdn.comparitech.com/wp-content/uploads/2017/08/reddit-1.jpg";
-      output += "\n            <div class=\"card mb-2\">\n            <img class=\"card-img-top\" src=\"".concat(image, "\" alt=\"Card image cap\">\n            <div class=\"card-body\">\n              <h5 class=\"card-title\">").concat(post.title, "</h5>\n              <p class=\"card-text\">").concat(truncateString(post.selftext, 100), "</p>\n              <a href=\"").concat(post.url, "\" target=\"_blank\n              \" class=\"btn btn-primary\">Read More</a>\n              <hr>\n              <span class=\"badge badge-secondary\">Subreddit: ").concat(post.subreddit, "</span> \n              <span class=\"badge badge-dark\">Score: ").concat(post.score, "</span>\n            </div>\n          </div>\n            ");
-    });
-    output += "</div>";
-    document.getElementById("results").innerHTML = output;
-  });
-}
-/**
- * @description submit event requesting the url and getting back the response viia the {@link handleSubmit}
- * @name submit
- * @event
- * @param {String} submit the name of event to be
- * @param {function} callback callback function takes event object an aparameter
- *
- */
-
-
-searchForm.addEventListener("submit", function (e) {
-  e.preventDefault();
-  handleSubmit(e);
-});
-/**
- * @description  if the user doesn't enter proper inputs this message gonnea alert reminding him to do
- * it also gonna fade seconds after
- * @function
- * @name showMessage
- * @param {String} message text to be shown to the user
- * @param {String}  className warning effect is aded to the text
- */
-
-function showMessage(message, className) {
-  // Create div
-  var div = document.createElement("div"); // Add classes
-
-  div.className = "alert ".concat(className); // Add text
-
-  div.appendChild(document.createTextNode(message)); // Get parent
-
-  var searchContainer = document.getElementById("search-container"); // Get form
-
-  var search = document.getElementById("search"); // Insert alert
-
-  searchContainer.insertBefore(div, search); // Timeout after 3 sec
-
-  setTimeout(function () {
-    document.querySelector(".alert").remove();
-  }, 3000);
-}
-/**
- * @description truncating the too long texts
- * @name truncateString
- * @function
- * @param {String} myString  text to be truncated  in case it is too long to show
- * @param {Number} limit     the maximum letters length to be truncated (index to truncate from)
- * @returns {String}   trancated string fitting to be shown
- */
-
-
-function truncateString(myString, limit) {
-  var shortened = myString.indexOf(" ", limit);
-  if (shortened == -1) return myString;
-  return myString.substring(0, shortened);
-}
-},{"./redditapi":"src/js/redditapi.js"}],"C:/Users/ِABDURRAHMAN/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+})();
+},{}],"C:/Users/ِABDURRAHMAN/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -475,5 +347,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["C:/Users/ِABDURRAHMAN/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/js/index.js"], null)
-//# sourceMappingURL=/js.d818e0ef.js.map
+},{}]},{},["C:/Users/ِABDURRAHMAN/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","docs/scripts/linenumber.js"], null)
+//# sourceMappingURL=/linenumber.f56662ff.js.map
