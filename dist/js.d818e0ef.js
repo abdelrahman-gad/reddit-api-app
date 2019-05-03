@@ -117,45 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"src/js/redditapi.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  /**
-   * @description this object dealing with the reddit api usin fetch api
-   * @see {@link http://www.reddit.com }
-   * @this reddit  object
-   * @name search 
-   * @param  {string}  searchTerm   represents the word term user is looking for 
-   * @param  {number} searchLimit   the number of search result reflect back from the api
-   * @param {string}   sortBy       the priority of sorting by latest posts or revelancy
-   * @method 
-   * @returns {Array<Object>}       each object contains bunch of properties  {title , name ,image}   like so 
-   */
-  search: function search(searchTerm, searchLimit, sortBy) {
-    return fetch("http://www.reddit.com/search.json?q=".concat(searchTerm, "&sort=").concat(sortBy, "&limit=").concat(searchLimit)).then(function (res) {
-      return res.json();
-    }).then(function (data) {
-      return data.data.children.map(function (data) {
-        return data.data;
-      });
-    }).catch(function (err) {
-      return console.log(err);
-    });
-  }
-};
-exports.default = _default;
-},{}],"src/js/index.js":[function(require,module,exports) {
-"use strict";
-
-var _redditapi = _interopRequireDefault(require("./redditapi"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+})({"src/js/index.js":[function(require,module,exports) {
 /**
  * @description catching the html element form#search-form  and asssigning it to a DOM object
  * @const
@@ -180,6 +142,29 @@ var searchBtn = document.getElementById("search-btn");
 
 var searchInput = document.getElementById("search-input");
 /**
+    * @description this object dealing with the reddit api usin fetch api
+    * @see {@link http://www.reddit.com }
+    * @this reddit  object
+    * @name search 
+    * @param  {string}  searchTerm   represents the word term user is looking for 
+    * @param  {number} searchLimit   the number of search result reflect back from the api
+    * @param {string}   sortBy       the priority of sorting by latest posts or revelancy
+    * @function 
+    * @returns {Array<Object>}       each object contains bunch of properties  {title , name ,image}   like so 
+    */
+
+function search(searchTerm, searchLimit, sortBy) {
+  return fetch("http://www.reddit.com/search.json?q=".concat(searchTerm, "&sort=").concat(sortBy, "&limit=").concat(searchLimit)).then(function (res) {
+    return res.json();
+  }).then(function (data) {
+    return data.data.children.map(function (data) {
+      return data.data;
+    });
+  }).catch(function (err) {
+    return console.log(err);
+  });
+}
+/**
  * @description thei most important functio it takes the inputs parameters from the {@link searchform}
  * then passing the via the url from the method {@link search} then getting the respnse then populate the DOM
  * @summary make response/get response /populate the DOM
@@ -187,6 +172,7 @@ var searchInput = document.getElementById("search-input");
  * @name handleSubmit
  * @function
  */
+
 
 function handleSubmit(e) {
   // Get sort
@@ -204,7 +190,7 @@ function handleSubmit(e) {
 
   searchInput.value = ""; // Search Reddit
 
-  _redditapi.default.search(searchTerm, searchLimit, sortBy).then(function (results) {
+  search(searchTerm, searchLimit, sortBy).then(function (results) {
     var output = '<div class="card-columns">';
     console.log(results);
     results.forEach(function (post) {
@@ -222,7 +208,6 @@ function handleSubmit(e) {
  * @event
  * @param {String} submit the name of event to be
  * @param {function} callback callback function takes event object an aparameter
- *
  */
 
 
@@ -272,7 +257,7 @@ function truncateString(myString, limit) {
   if (shortened == -1) return myString;
   return myString.substring(0, shortened);
 }
-},{"./redditapi":"src/js/redditapi.js"}],"C:/Users/ِABDURRAHMAN/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{}],"C:/Users/ِABDURRAHMAN/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -300,7 +285,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58417" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60122" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

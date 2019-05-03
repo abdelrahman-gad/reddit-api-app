@@ -1,4 +1,3 @@
-import reddit from "./redditapi";
 
 /**
  * @description catching the html element form#search-form  and asssigning it to a DOM object
@@ -15,7 +14,6 @@ const searchForm = document.getElementById("search-form");
  * @type {Object} DOM object
  */
 const searchBtn = document.getElementById("search-btn");
-
 /**
  * @description catching the html element form#search-input  and asssigning it to a DOM object
  * @const
@@ -23,6 +21,28 @@ const searchBtn = document.getElementById("search-btn");
  * @type {Object} DOM object
  */
 const searchInput = document.getElementById("search-input");
+ /**
+     * @description this object dealing with the reddit api usin fetch api
+     * @see {@link http://www.reddit.com }
+     * @this reddit  object
+     * @name search 
+     * @param  {string}  searchTerm   represents the word term user is looking for 
+     * @param  {number} searchLimit   the number of search result reflect back from the api
+     * @param {string}   sortBy       the priority of sorting by latest posts or revelancy
+     * @function 
+     * @returns {Array<Object>}       each object contains bunch of properties  {title , name ,image}   like so 
+     */
+    function search(searchTerm, searchLimit, sortBy) {
+      return fetch(
+        `http://www.reddit.com/search.json?q=${searchTerm}&sort=${sortBy}&limit=${searchLimit}`
+      )
+        .then(res => res.json())
+        .then(data => {
+          return data.data.children.map(data => data.data);
+        })
+        .catch(err => console.log(err));
+    }
+
 
 /**
  * @description thei most important functio it takes the inputs parameters from the {@link searchform}
@@ -48,7 +68,7 @@ function handleSubmit(e) {
   searchInput.value = "";
 
   // Search Reddit
-  reddit.search(searchTerm, searchLimit, sortBy).then(results => {
+  search(searchTerm, searchLimit, sortBy).then(results => {
     let output = '<div class="card-columns">';
     console.log(results);
     results.forEach(post => {
@@ -84,9 +104,7 @@ function handleSubmit(e) {
  * @event
  * @param {String} submit the name of event to be
  * @param {function} callback callback function takes event object an aparameter
- *
  */
-
 searchForm.addEventListener("submit", e => {
   e.preventDefault();
   handleSubmit(e);
