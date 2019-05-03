@@ -154,7 +154,7 @@ var searchInput = document.getElementById("search-input");
     */
 
 function search(searchTerm, searchLimit, sortBy) {
-  return fetch("http://www.reddit.com/search.json?q=".concat(searchTerm, "&sort=").concat(sortBy, "&limit=").concat(searchLimit)).then(function (res) {
+  return fetch("https://www.reddit.com/search.json?q=".concat(searchTerm, "&sort=").concat(sortBy, "&limit=").concat(searchLimit)).then(function (res) {
     return res.json();
   }).then(function (data) {
     return data.data.children.map(function (data) {
@@ -285,7 +285,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60122" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61895" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
